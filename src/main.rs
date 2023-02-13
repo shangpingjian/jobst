@@ -18,6 +18,6 @@ async fn main() {
         }
     };
 
-
+    manager::start().await;
 
 }

@@ -6,7 +6,7 @@ pub fn config_app(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/job")
             .service(
-                web::resource("/")
+                web::resource("")
                     .route(web::get().to(job::get_jobs))
                     .route(web::post().to(job::add_job)),
             )

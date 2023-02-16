@@ -1,3 +1,5 @@
+pub mod log;
+
 use std::fs::File;
 use std::io::Read;
 use lazy_static::lazy_static;
@@ -5,9 +7,9 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Server {
-    pub port: u32,
-    pub read_time_out: u32,
-    pub write_time_out: u32,
+    pub port: u16,
+    pub read_time_out: i32,
+    pub write_time_out: i32,
 
 }
 

@@ -14,7 +14,7 @@ pub enum AdapterType{
 pub enum AdapterError{
     ArgsError,
     ConnectionError,
-    EncodeError,
+    ParseError,
     IOError,
     UnknownError,
 }
@@ -42,7 +42,8 @@ pub trait Adapter {
     fn get_job_pile(&self);
     async fn get_jobs(&self)->Result<Vec<Job>, AdapterError>;
     async fn create_job(&self, job: Job)->Result<(), AdapterError>;
-
+    async fn get_job(&self, job_id: String)->Result<Job, AdapterError>;
+    async fn delete_job(&self, job_id: String)->Result<(), AdapterError>;
 
 }
 

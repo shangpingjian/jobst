@@ -2,6 +2,7 @@ pub mod log;
 
 use std::fs::File;
 use std::io::Read;
+use actix_web::web::Data;
 use lazy_static::lazy_static;
 use serde::{Serialize, Deserialize};
 
@@ -21,13 +22,20 @@ pub struct Etcd {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct Database {
+    pub database_url: String,
+
+
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     pub server: Server,
     pub etcd: Etcd,
+    pub database: Database,
 }
 
 lazy_static!(
-
     pub static ref CONFIG:Config = init_config();
 );
 

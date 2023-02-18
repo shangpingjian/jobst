@@ -8,7 +8,7 @@ pub fn logger_init(){
     let config = r#"
     {
         "path":"./logs/tmp.log",
-        "level":"debug",
+        "level":"error",
         "size":10,
         "out_kind":["console","file"],
         "roll_count":10,

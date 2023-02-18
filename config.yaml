@@ -6,8 +6,5 @@ etcd:
   endpoints:
     - 127.0.0.1:2379
   dial_time_out: 5000
-mongo:
-  apply_uri: mongodb://10.152.4.122:27017
-  connect_time_out: 5000
-  db_name: cron
-  collection_name: log
+database:
+  database_url: mysql://root@127.0.0.1:3306/jobst

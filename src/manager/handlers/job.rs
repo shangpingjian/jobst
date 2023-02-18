@@ -12,9 +12,11 @@ use crate::adapter;
 
 
 pub async fn get_jobs(req: HttpRequest) -> HttpResponse {
+
     let ap = adapter::new(adapter::AdapterType::Etcd);
     let r = ap.get_jobs().await.unwrap();
     let response_body = serde_json::to_string(&r).unwrap();
+
     HttpResponse::Ok()
         .content_type(ContentType::plaintext())
         .body(response_body)

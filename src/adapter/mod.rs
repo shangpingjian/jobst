@@ -50,6 +50,6 @@ pub trait Adapter {
 
 pub fn new(adater_type: AdapterType)-> Box<dyn Adapter> {
     match adater_type {
-        AdapterType::Etcd=>Box::new(etcd::EtcdAdapter{}),
+        AdapterType::Etcd=>Box::new(etcd::EtcdAdapter::new()),
     }
 }

@@ -1,14 +1,14 @@
 use uuid;
 use actix_web::{
-    error, get,
-    http::{
+    App, Either,
+    error,
+    Error, get, http::{
         header::{self, ContentType},
         Method, StatusCode,
-    },
-    middleware, web, Error, App, Either, HttpRequest, HttpResponse, HttpServer, Responder, Result,
+    }, HttpRequest, HttpResponse, HttpServer, middleware, Responder, Result, web,
 };
-use crate::job::{Job, JobType};
-use crate::adapter;
+use jobst_common::job::{Job, JobType};
+use jobst_common::adapter;
 
 
 pub async fn get_jobs(req: HttpRequest) -> HttpResponse {
@@ -26,15 +26,15 @@ pub async fn add_job(req: HttpRequest, info: web::Json<Job>) -> Result<HttpRespo
     let ap = adapter::new(adapter::AdapterType::Etcd);
     let job = Job {
         job_id: uuid::Uuid::new_v4().to_string(),
-        job_name: "".to_string(),
-        job_type: JobType::HttpRequest,
+        job_name: info.job_name.to_string(),
+        job_type: info.job_type.clone(),
     };
     let r = ap.create_job(job).await;
     Ok(HttpResponse::Ok().finish())
 }
 
 pub async fn get_job_detail(req: HttpRequest, job_id: web::Path<String>) -> Result<HttpResponse, Error> {
-    let ap = adapter::new(adapter::AdapterType::Etcd);
+    let ap =adapter ::new(adapter::AdapterType::Etcd);
     let r = ap.get_job(job_id.to_string()).await.unwrap();
     let response_body = serde_json::to_string(&r).unwrap();
 

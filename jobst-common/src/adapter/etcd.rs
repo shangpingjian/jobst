@@ -1,6 +1,6 @@
 use std::future::Future;
 use crate::adapter::{Adapter, AdapterError};
-use crate::storege::etcd;
+use crate::storege::etcd as etcd_storge;
 use crate::job::{Job, JobInstance};
 use etcd_client;
 use async_trait::async_trait;
@@ -21,7 +21,7 @@ impl EtcdAdapter{
 
 
     pub fn new()->EtcdAdapter{
-        let client = block_on(etcd::get_client()).unwrap();
+        let client = block_on(etcd_storge::get_client()).unwrap();
 
         EtcdAdapter{
             client
@@ -53,7 +53,7 @@ impl Adapter for EtcdAdapter {
     fn get_job_pile(&self) {}
 
     async fn get_jobs(&self) -> Result<Vec<Job>, AdapterError> {
-        let r: Result<etcd_client::GetResponse, etcd_client::Error> = etcd::get_all(&mut self.client.clone(), JOB_DIR.to_string()).await;
+        let r: Result<etcd_client::GetResponse, etcd_client::Error> = etcd_storge::get_all(&mut self.client.clone(), JOB_DIR.to_string()).await;
         match r {
             Ok(a) => {
                 let mut jobs = vec![];
@@ -75,7 +75,7 @@ impl Adapter for EtcdAdapter {
     async fn create_job(&self, job: Job) -> Result<(), AdapterError> {
         let key = JOB_DIR.to_string() + &job.job_id;
         let value: Vec<u8> = job.into();
-        let r: Result<(), etcd_client::Error> = etcd::put(&mut self.client.clone(), key, value).await;
+        let r: Result<(), etcd_client::Error> = etcd_storge::put(&mut self.client.clone(), key, value).await;
         match r {
             Ok(_) => Ok(()),
             Err(e) => Err(self.error_transfer(Box::new(e)))
@@ -84,7 +84,7 @@ impl Adapter for EtcdAdapter {
 
     async fn get_job(&self, job_id: String) -> Result<Job, AdapterError> {
         let key = JOB_DIR.to_string() + &job_id;
-        let r: Result<etcd_client::GetResponse, etcd_client::Error> = etcd::get_all(&mut self.client.clone(), key).await;
+        let r: Result<etcd_client::GetResponse, etcd_client::Error> = etcd_storge::get_all(&mut self.client.clone(), key).await;
         match r {
             Ok(a) => {
                 let value = a.kvs()[0].value();
@@ -101,7 +101,7 @@ impl Adapter for EtcdAdapter {
 
     async fn delete_job(&self, job_id: String) -> Result<(), AdapterError> {
         let key = JOB_DIR.to_string() + &job_id;
-        let r: Result<etcd_client::DeleteResponse, etcd_client::Error> = etcd::delete(&mut self.client.clone(), key).await;
+        let r: Result<etcd_client::DeleteResponse, etcd_client::Error> = etcd_storge::delete(&mut self.client.clone(), key).await;
         match r {
             Ok(a) => Ok(()),
             Err(e) => Err(self.error_transfer(Box::new(e)))

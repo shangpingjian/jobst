@@ -23,7 +23,7 @@ pub enum ExecStatus {
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum JobType {
     HttpRequest,
     GrpcRequest,

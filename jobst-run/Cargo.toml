@@ -22,3 +22,4 @@ serde_bytes = "0.11.7"
 uuid = { version = "1.2.1", features = ["v4", "fast-rng", "macro-diagnostics"] }
 job_scheduler = "1.2.1"
 diesel = { version = "2.0.0", features = ["mysql"] }
+jobst-common = { path = "../jobst-common" }

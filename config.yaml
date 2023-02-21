@@ -2,9 +2,14 @@ server:
   port: 8080
   read_time_out: 5000
   write_time_out: 5000
+
+
+engine_type: etcd
 etcd:
   endpoints:
     - 127.0.0.1:2379
   dial_time_out: 5000
+
+
 database:
   database_url: mysql://root@127.0.0.1:3306/jobst

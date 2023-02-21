@@ -14,6 +14,12 @@ pub struct Server {
 
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub enum EngineType {
+    Etcd,
+
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Etcd {
     pub endpoints: Vec<String>,
@@ -25,12 +31,12 @@ pub struct Etcd {
 pub struct Database {
     pub database_url: String,
 
-
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     pub server: Server,
+    pub engine_type: EngineType,
     pub etcd: Etcd,
     pub database: Database,
 }
@@ -41,16 +47,15 @@ lazy_static!(
 
 
 pub fn init_config() -> Config {
-
     let file_res = File::open("config.yaml");
     let file = match file_res {
-        Ok(f) => {f}
+        Ok(f) => { f }
         Err(e) => {
             panic!("load config error: {}", e)
         }
     };
-    let config:Config = match serde_yaml::from_reader(file){
-        Ok(c) => {c},
+    let config: Config = match serde_yaml::from_reader(file) {
+        Ok(c) => { c }
         Err(e) => {
             panic!("load config error: {}", e)
         }

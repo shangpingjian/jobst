@@ -10,18 +10,18 @@ pub enum RunType {
     Async,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum State {
     Valid,
     Invalid,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum ExecStatus {
     Pending,
     Processing,
     Done,
-    Failed
+    Failed,
 }
 
 impl FromStr for ExecStatus {
@@ -59,17 +59,16 @@ impl FromStr for JobType {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Job {
     pub job_id: String,
     pub job_name: String,
     pub job_type: JobType,
     pub state: State,
-    pub exec_status: ExecStatus
-
+    pub exec_status: ExecStatus,
 }
 
-impl Into<Vec<u8>> for Job{
+impl Into<Vec<u8>> for Job {
     fn into(self) -> Vec<u8> {
         let bytes = to_vec(&self).unwrap();
         bytes
@@ -89,14 +88,20 @@ pub struct JobQueue {
     pub run_type: RunType,
     pub job_ids: Vec<String>,
     pub state: State,
-    pub exec_status: ExecStatus
-
+    pub exec_status: ExecStatus,
 }
 
-impl Into<Vec<u8>> for JobQueue{
+impl Into<Vec<u8>> for JobQueue {
     fn into(self) -> Vec<u8> {
         let bytes = to_vec(&self).unwrap();
         bytes
+    }
+}
+
+impl From<Vec<u8>> for JobQueue {
+    fn from(bytes: Vec<u8>) -> Self {
+        let q: JobQueue = serde_json::from_slice(&bytes).unwrap();
+        q
     }
 }
 
@@ -106,31 +111,44 @@ pub struct JobPile {
     pub queue_ids: Vec<String>,
     pub run_type: RunType,
     pub state: State,
-    pub exec_status: ExecStatus
-
+    pub exec_status: ExecStatus,
 }
 
-impl Into<Vec<u8>> for JobPile{
+impl Into<Vec<u8>> for JobPile {
     fn into(self) -> Vec<u8> {
         let bytes = to_vec(&self).unwrap();
         bytes
     }
 }
 
+impl From<Vec<u8>> for JobPile {
+    fn from(bytes: Vec<u8>) -> Self {
+        let p: JobPile = serde_json::from_slice(&bytes).unwrap();
+        p
+    }
+}
+
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JobPlan {
-    pub plan_id:String,
+    pub plan_id: String,
     pub plan_name: String,
     pub pile_id: String,
     pub cron_expr: String,
     pub state: State,
-    pub exec_status: ExecStatus
-
+    pub exec_status: ExecStatus,
 }
 
-impl Into<Vec<u8>> for JobPlan{
+impl Into<Vec<u8>> for JobPlan {
     fn into(self) -> Vec<u8> {
         let bytes = to_vec(&self).unwrap();
         bytes
+    }
+}
+
+impl From<Vec<u8>> for JobPlan {
+    fn from(bytes: Vec<u8>) -> Self {
+        let p: JobPlan = serde_json::from_slice(&bytes).unwrap();
+        p
     }
 }
